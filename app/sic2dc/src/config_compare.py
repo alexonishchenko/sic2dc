@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import ast
+import json
 import logging
 
 from collections import defaultdict
@@ -22,7 +23,27 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
     """
     Base Config Compare class reads two input files, cures them and transforms them into nested dicts.
     The dicts can be changed with the help of input filters. And then dicts are compared.
-    Filters are objects of class CfgCmprFilter (filter actions examples are cp21, cp12, del1, del2, upd1,upd2).
+    Filters are transformed into list of objects of class CfgCmprFilter
+        (filter actions examples are cp21, cp12, del1, del2, upd1,upd2).
+    Cures are transformed into list of objects of class CfgCmprCure
+
+
+    When ConfigCompareBase object is created it has 'diff_dict' property. 'diff_dict' keys are tuple paths to
+        differing config  parts. Example
+    
+    diff_dict:
+        {
+            ('interface Port-Channel1',): {
+                'add': {'switchport trunk allowed vlan 11': {}},
+                'del': {'switchport trunk allowed vlan 11,13': {}},
+            }
+            ('interface Ethernet5', 'lldp'): {
+                'del': {'enable': {}},
+            }
+        }
+
+    
+    ConfigCompareBase.dump() returns and/or prints out text (color) difference.
     """
     def __init__(self, f1: str, f2: str, settings: CfgCmprSettings, filters: list[dict] = None, cures: list[dict] = None):
         """
@@ -138,3 +159,24 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
 
         self.diff_dict = dict(diff_dict)
 
+
+def sic2dc(f1: str, f2: str, settings: dict, filters: list[dict], cures: list[dict], color: bool) -> dict:
+    """
+    Creates ConfigCompareBase object and compares f1 and f2.
+    Returns ConfigCompareBase.diff_dict and ConfigCompareBase.dump() lines as dict
+    Returns dict:
+        'diff_dict': dict
+        'diff_lines': str
+    """
+
+    # dirty hack: transform filters and cures from e.g. AnsibleBaseYAMLObject into native python objects.
+    cures = json.loads(json.dumps(cures)) if cures else list()
+    filters = json.loads(json.dumps(filters)) if filters else list()
+    settings = json.loads(json.dumps(settings))
+    
+
+    # init cc object
+    cc = ConfigCompareBase(f1, f2, settings, filters=filters, cures=cures)
+
+    # return diff_dict and text diff form.
+    return {'diff_dict': cc.diff_dict, 'diff_lines': cc.dump(quiet=True, color=color)}

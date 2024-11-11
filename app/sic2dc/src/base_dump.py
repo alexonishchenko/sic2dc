@@ -35,6 +35,9 @@ logger = logging.getLogger()
 
 
 def dump_action(action_dict: dict, path: list[str], symbol: str, color: bool = False) -> list[str]:
+    """
+    Dump single path action (add/del) to text.
+    """
     if not action_dict:
         return []
 

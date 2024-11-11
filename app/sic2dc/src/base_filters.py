@@ -5,6 +5,10 @@ from sic2dc.src.schema import CfgCmprFilter, When
 from sic2dc.src.tools import get_subdict_by_path, paths_by_path_ptrns
 
 def _apply_whens(path_patterns: list[str], whens: list[When] = None, d1: dict = None, d2: dict = None) -> list[str]:
+    """
+    Actually main filters logic.
+    Returns all paths filtered by 'path_patterns' and then all 'whens' are applied.
+    """
     d1 = d1 if d1 else dict()
     d2 = d2 if d2 else dict()
     path_patterns = path_patterns if path_patterns else []
