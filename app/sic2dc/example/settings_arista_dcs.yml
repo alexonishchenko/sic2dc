@@ -1,0 +1,5 @@
+indent_char: ' '
+indent: 3
+comments:
+  - '^\s*[\!\#].*?$'
+  - '^\s*$'

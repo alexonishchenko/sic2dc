@@ -1,0 +1,5 @@
+- action: enter_exit
+  kwargs:
+    enter_exits:
+      - enter: ' address-family \S+\s.*$'
+        exit: ' exit-address-family$'

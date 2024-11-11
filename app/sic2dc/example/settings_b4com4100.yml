@@ -1,0 +1,8 @@
+ignore_cmd_nocmd: True
+indent_char: ' '
+indent: 1
+comments:
+  - '^\s*[\!\#].*?$'
+  - '^\s*$'
+  - '^\s*exit\s*$'
+  - '^end\s*$'
