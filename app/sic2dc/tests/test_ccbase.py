@@ -2,9 +2,6 @@ from pathlib import Path
 
 from ruamel.yaml import YAML
 
-from .example_input_arista import EXAMPLE_FILTERS_ARISTA, EXAMPLE_SETTINGS_ARISTA
-from .example_input_b4com import EXAMPLE_CURES_B4COM, EXAMPLE_SETTINGS_B4COM
-
 from sic2dc.src.config_compare import ConfigCompareBase
 from sic2dc.src.tools import load_yaml
 
@@ -21,7 +18,7 @@ def test_cc_base():
 
     settings = load_yaml(str(file_settings.absolute()))
     filters = load_yaml(str(file_filters.absolute()))
-    
+
     cc = ConfigCompareBase(str(f1.absolute()), str(f2.absolute()), settings, filters)
 
     assert not cc.diff_dict
