@@ -1,0 +1,7 @@
+router bgp 66666: 
+  router-id 10.10.10.1: {}
+  address-family evpn: 
+    neighbor EVPN activate: {}
+  address-family ipv4: 
+    no neighbor Overlay activate: {}
+    neighbor Underlay activate: {}

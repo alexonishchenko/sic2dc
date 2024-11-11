@@ -1,0 +1,81 @@
+EXAMPLE_SETTINGS_ARISTA = """
+indent_char: ' '
+indent: 3
+comments: ['^\\s*[\\!\\#].*?$', '^\\s*$']
+"""
+
+EXAMPLE_FILTERS_ARISTA = """
+# arista.operstate: add swprt mode access if swprt access vlan
+#   in operstate config this is hidden
+- action: upd2
+  path: [^interface Eth.*]
+  data:
+    switchport mode access: {}
+  when:
+    - has_children: [switchport access vlan.*]
+
+# arista.operstate: add no shutdown
+- action: upd2
+  path: [^interface (Ethernet|Vlan|Loopback|Port-Chan|Management).*]
+  data:
+    "no shutdown": {}
+  when:
+    - has_children: ['^.*$']
+    - doesnt_have_chidren: [^shutdown$]
+
+# arista.desiredstate: copy unused interfaces from operstate
+- action: cp21
+  path: [^interface (Ethernet|Management).*]
+  when:
+    - has_children: ['^shutdown$']
+    - absent_in_destination: True
+
+# arista.desiredstate: copy no switchoport to desired state
+- action: cp21
+  path: [^interface Ethernet.*, no switchport]
+  when:
+    - absent_in_destination: True
+
+# arista.operstate: delete snmp engine id
+- action: del2
+  path: ['snmp-server engineID .*']
+
+# arista.desiredstate: copy system l1 from operstaet
+- action: cp21
+  path: [^system l1]
+  when:
+    - absent_in_destination: True
+
+# arista.desiredstate: delete errdisable default value
+- action: del1
+  path: [^errdisable recovery interval 300]
+
+# arista: multihop bfd
+- action: del1
+  path:
+    - router bfd
+    - multihop interval 300 min-rx 300 multiplier 3
+- action: del2
+  path:
+    - router bfd
+    - multihop interval 300 min-rx 300 multiplier 3
+- action: del1
+  path:
+    - router bfd
+  when:
+    - doesnt_have_chidren: [^.*$]
+- action: del2
+  path:
+    - router bfd
+  when:
+    - doesnt_have_chidren: [^.*$]
+
+
+    
+# arista.desiredstate: bgp default remove
+- action: del1
+  path:
+    - ^router bgp \\d+
+    - bgp default ipv4-unicast
+    
+"""
