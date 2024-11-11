@@ -86,7 +86,7 @@ class CuresMixin:
 
         Example b4com bgp address families:
         enter_exits:
-          - enter: ' address-family \S+\s.*$'
+          - enter: ' address-family \\S+\\s.*$'
             exit: ' exit-address-family$'
         router bgp 123
          ...
