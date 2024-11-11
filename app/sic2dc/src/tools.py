@@ -1,5 +1,13 @@
 import re
 
+from ruamel.yaml import YAML
+
+def load_yaml(filename: str) -> list | dict:
+    with open(filename, 'r') as f:
+        yaml = YAML(typ="safe")
+        return yaml.load(f)
+
+
 def paths_to_dict(paths: list[tuple]) -> dict:
     """
     Turn list of paths into dict.
