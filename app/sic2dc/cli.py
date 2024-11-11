@@ -2,10 +2,10 @@ from pathlib import Path
 
 import argparse
 
-from sic2dc.src.config_compare import ConfigCompareBase
-from sic2dc.src.tools import load_yaml
+from .src.config_compare import ConfigCompareBase
+from .src.tools import load_yaml
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(
         prog='sic2dc',
         description='Simple indented config to dict compare.',
@@ -84,3 +84,7 @@ if __name__ == '__main__':
         cc.dump(quiet=False, color=color)
     else:
         print(f"No diffs found.")
+
+
+if __name__ == '__main__':
+    main()
