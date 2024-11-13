@@ -18,7 +18,7 @@ setup(
     author="Alexander Onishchenko",
     license="MIT",
     install_requires=requirements("requirements.txt"),
-    extras_require={"dev": requirements("requirements_tests.txt")},
+    extras_require={"dev": requirements("requirements_dev.txt")},
     entry_points={
         'console_scripts': ['sic2dc = sic2dc.cli:main'],
     },
