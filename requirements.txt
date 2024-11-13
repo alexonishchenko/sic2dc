@@ -1,8 +1,5 @@
-annotated-types
 deepdiff
-orderly-set
 pydantic
 pydantic_core
 ruamel.yaml
 ruamel.yaml.clib
-typing_extensions

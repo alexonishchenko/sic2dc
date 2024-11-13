@@ -1,7 +1,7 @@
 [project]
 name = "sic2dc"
 description = "Simple indented config to dict compare."
-version = "0.0.2-1"
+version = "0.0.3-5"
 requires-python = ">=3.11"
 dynamic = ["dependencies", "optional-dependencies"]
 
@@ -29,9 +29,14 @@ homepage = "https://github.com/alexonishchenko/sic2dc"
 
 
 [project.scripts]
-sic2dc = "sic2dc.cli:main"
+sic2dc = "sic2dc.sic2dc_cli:main"
 
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 optional-dependencies = {dev = { file = ["requirements_dev.txt"] }}
+
+
+[build-system]
+requires = ["setuptools>=75.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
