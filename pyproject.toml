@@ -1,0 +1,37 @@
+[project]
+name = "sic2dc"
+description = "Simple indented config to dict compare."
+version = "0.0.1"
+requires-python = ">=3.11"
+dynamic = ["dependencies", "optional-dependencies"]
+
+readme = {file = "README.md", content-type = "text/markdown"}
+
+license = { file = "LICENSE" }
+authors = [
+    { name = "Alexander Onishchenko", email = "alexonishchenko@gmail.com" }
+]
+
+keywords = [
+  "configuration",
+  "difference",
+  "diff",
+  "compare",
+  "config-compare",
+  "network",
+  "network-config",
+]
+
+
+[project.urls]
+repository = "https://github.com/alexonishchenko/sic2dc"
+homepage = "https://github.com/alexonishchenko/sic2dc"
+
+
+[project.scripts]
+sic2dc = "sic2dc.cli:main"
+
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies = {dev = { file = ["requirements_dev.txt"] }}
