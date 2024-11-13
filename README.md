@@ -134,7 +134,7 @@ when:
   - absent_in_destination: True
 ```
 ## examples
-See app/sic2dc/example/* for filters/cures/settings examples
+See [examples](https://github.com/alexonishchenko/sic2dc/tree/main/sic2dc/example) for filters/cures/settings examples
 
 # Settings
 Settings configure the following parameters (example for b4com switches).
