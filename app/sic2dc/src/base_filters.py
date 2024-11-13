@@ -4,6 +4,7 @@ from sic2dc.src.schema import CfgCmprFilter, When
 
 from sic2dc.src.tools import get_subdict_by_path, paths_by_path_ptrns
 
+
 def _apply_whens(path_patterns: list[str], whens: list[When] = None, d1: dict = None, d2: dict = None) -> list[str]:
     """
     Actually main filters logic.
@@ -64,8 +65,7 @@ def _apply_whens(path_patterns: list[str], whens: list[When] = None, d1: dict = 
         return result
 
 
-
-class FiltersMixin():
+class FiltersMixin:
     d1: dict
     d2: dict
 
@@ -145,5 +145,3 @@ class FiltersMixin():
         Filter. Update self.d2 at path with data dict.
         """
         self.upd_path(self.d2, filter.path, filter.when, dict(filter.data))
-
-

@@ -2,6 +2,7 @@ import re
 
 from ruamel.yaml import YAML
 
+
 def load_yaml(filename: str) -> list | dict:
     with open(filename, 'r') as f:
         yaml = YAML(typ="safe")
@@ -177,6 +178,6 @@ def paths_by_path_ptrns(d: dict, path: list[str] = None) -> list:
         result = [r for r in result if len(r) > i and re.match(ptrn, r[i])]
 
     # trim by path pattern length
-    result = [r[:len(path)] for r in result]
-    
+    result = [r[: len(path)] for r in result]
+
     return [list(t) for t in set([tuple(r) for r in result])]

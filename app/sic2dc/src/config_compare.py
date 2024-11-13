@@ -30,7 +30,7 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
 
     When ConfigCompareBase object is created it has 'diff_dict' property. 'diff_dict' keys are tuple paths to
         differing config  parts. Example
-    
+
     diff_dict:
         {
             ('interface Port-Channel1',): {
@@ -42,12 +42,15 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
             }
         }
 
-    
+
     ConfigCompareBase.dump() returns and/or prints out text (color) difference.
     """
-    def __init__(self, f1: str, f2: str, settings: CfgCmprSettings, filters: list[dict] = None, cures: list[dict] = None):
+
+    def __init__(
+        self, f1: str, f2: str, settings: CfgCmprSettings, filters: list[dict] = None, cures: list[dict] = None
+    ):
         """
-        1. Create cc object: read files, apply cures and create d1 and d2. 
+        1. Create cc object: read files, apply cures and create d1 and d2.
         2. Apply filters to dicts
         3. Run comparison
         """
@@ -91,7 +94,7 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
 
         self.d1_unfiltered = deepcopy(self.d1)
         self.d2_unfiltered = deepcopy(self.d2)
-        
+
         # apply filters to dicts
         self.apply_filters()
 
@@ -161,12 +164,13 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
 
 
 def sic2dc(
-        f1: str,
-        f2: str,
-        settings: dict,
-        filters: list[dict] | None = None,
-        cures: list[dict] | None = None,
-        color: bool = False) -> dict:
+    f1: str,
+    f2: str,
+    settings: dict,
+    filters: list[dict] | None = None,
+    cures: list[dict] | None = None,
+    color: bool = False,
+) -> dict:
     """
     Creates ConfigCompareBase object and compares f1 and f2.
     Returns ConfigCompareBase.diff_dict and ConfigCompareBase.dump() lines as dict
@@ -179,7 +183,6 @@ def sic2dc(
     cures = json.loads(json.dumps(cures)) if cures else list()
     filters = json.loads(json.dumps(filters)) if filters else list()
     settings = json.loads(json.dumps(settings))
-    
 
     # init cc object
     cc = ConfigCompareBase(f1, f2, settings, filters=filters, cures=cures)

@@ -2,14 +2,11 @@ from pathlib import Path
 
 from setuptools import find_packages, setup
 
+
 def requirements(filename: str) -> str:
     file_reqs = Path(__file__).parent / filename
     with open(str(file_reqs.absolute())) as file:
-        return "".join(
-            line
-            for line in file.readlines()
-            if not line.startswith("-")
-        )
+        return "".join(line for line in file.readlines() if not line.startswith("-"))
 
 
 setup(
@@ -21,9 +18,7 @@ setup(
     author="Alexander Onishchenko",
     license="MIT",
     install_requires=requirements("requirements.txt"),
-    extras_require={
-        "dev": requirements("requirements_tests.txt")
-    },
+    extras_require={"dev": requirements("requirements_tests.txt")},
     entry_points={
         'console_scripts': ['sic2dc = sic2dc.cli:main'],
     },

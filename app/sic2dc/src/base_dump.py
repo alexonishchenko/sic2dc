@@ -7,6 +7,7 @@ from ruamel.yaml.compat import StringIO
 
 from sic2dc.src.tools import get_subdict_by_path
 
+
 def pathlist2dict(l: list[str], value: dict | None = None) -> dict:
     current = value
     for p in l[::-1]:
@@ -84,7 +85,7 @@ class DumpMixin:
             lines_add = dump_action(v['add'], k, char_add, color)
             lines_del = dump_action(v['del'], k, char_del, color)
             if lines_add:
-                lines_del = lines_del[len(k):]
+                lines_del = lines_del[len(k) :]
             result.extend(lines_add + lines_del)
         if not quiet:
             print('\n'.join(result))

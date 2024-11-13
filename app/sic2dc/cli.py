@@ -5,6 +5,7 @@ import argparse
 from .src.config_compare import ConfigCompareBase
 from .src.tools import load_yaml
 
+
 def main():
     parser = argparse.ArgumentParser(
         prog='sic2dc',
@@ -60,7 +61,6 @@ def main():
         metavar='\b',
     )
 
-
     args = parser.parse_args()
 
     file1 = Path(args.config_1)
@@ -81,8 +81,9 @@ def main():
     else:
         filters = list()
 
-    cc = ConfigCompareBase(f1=str(file1.absolute()), f2=str(file2.absolute()),
-                           settings=settings, filters=filters, cures=cures)
+    cc = ConfigCompareBase(
+        f1=str(file1.absolute()), f2=str(file2.absolute()), settings=settings, filters=filters, cures=cures
+    )
 
     color = not args.no_color
 

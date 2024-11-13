@@ -1,6 +1,7 @@
 from enum import Enum
 from pydantic import BaseModel, StrictStr
 
+
 class CureActionEnum(str, Enum):
     enter_exit = 'enter_exit'
 
@@ -15,7 +16,7 @@ class FilterActionEnum(str, Enum):
 
 
 class When(BaseModel):
-    has_children: list[StrictStr] |None  = None
+    has_children: list[StrictStr] | None = None
     doesnt_have_chidren: list[StrictStr] | None = None
     absent_in_destination: bool | None = None
 

@@ -2,6 +2,7 @@ import re
 
 from sic2dc.src.schema import CfgCmprCure, CfgCmprSettings
 
+
 class CuresMixin:
     c1: str
     c2: str
@@ -57,7 +58,7 @@ class CuresMixin:
             enter_exit_level = 0
             result_config_lines = list()
             for line in config.split('\n'):
-                add_indent = str(enter_exit_level*(self.settings.indent_char*self.settings.indent))
+                add_indent = str(enter_exit_level * (self.settings.indent_char * self.settings.indent))
                 result_line = f"{add_indent}{line}"
                 result_config_lines.append(result_line)
                 for enter_exit in enter_exits:
@@ -66,4 +67,3 @@ class CuresMixin:
                     if re.match(enter_exit['exit'], line):
                         enter_exit_level -= 1
             setattr(self, attr, '\n'.join(result_config_lines))
-

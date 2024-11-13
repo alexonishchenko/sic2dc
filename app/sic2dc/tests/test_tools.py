@@ -1,19 +1,24 @@
 import pytest
 
-from sic2dc.src.tools import (dict_path, get_subdict_by_path, indented_to_dict,paths_to_dict, paths_by_path_ptrns,
-                            remove_key_nokey)
+from sic2dc.src.tools import (
+    dict_path,
+    get_subdict_by_path,
+    indented_to_dict,
+    paths_to_dict,
+    paths_by_path_ptrns,
+    remove_key_nokey,
+)
 
 
 @pytest.mark.parametrize(
     "paths, result",
     [
-        ([('k1',),('k1', 'k2'), ('k1', 'k2', 'k3'), ('k1', 'k4')], {'k1': {'k2': {'k3': {}}, 'k4': {}}}),
-        ([('k1',),('k1', 'k2'), ('k3',), ('k3', 'k4')], {'k1': {'k2': {}}, 'k3': {'k4': {}}})
+        ([('k1',), ('k1', 'k2'), ('k1', 'k2', 'k3'), ('k1', 'k4')], {'k1': {'k2': {'k3': {}}, 'k4': {}}}),
+        ([('k1',), ('k1', 'k2'), ('k3',), ('k3', 'k4')], {'k1': {'k2': {}}, 'k3': {'k4': {}}}),
     ],
 )
 def test_paths_to_dict(paths: list[tuple], result: dict):
     assert paths_to_dict(paths) == result
-
 
 
 @pytest.mark.parametrize(
@@ -22,7 +27,6 @@ def test_paths_to_dict(paths: list[tuple], result: dict):
         ('arista_short_str', ' ', 3, ['^\\s*!.*$'], 'arista_short_dict'),
     ],
 )
-
 def test_indented_to_dict(config: str, indent_char: str, indent: int, comments: list[str], result, request):
     config = request.getfixturevalue(config)
     result = request.getfixturevalue(result)
@@ -97,7 +101,6 @@ def test_dict_path():
     assert dict_path(d1) == paths
 
 
-
 EXAMPLE_DICT = {
     'interface e1': {
         'no shutdown': {},
@@ -117,10 +120,9 @@ EXAMPLE_DICT = {
         'switchport access vlan 3': {},
         'switchport': {},
     },
-    'router bgp 6666': {
-        'router-id 1': {}
-    }
+    'router bgp 6666': {'router-id 1': {}},
 }
+
 
 @pytest.mark.parametrize(
     "d, path, result",
@@ -150,6 +152,5 @@ EXAMPLE_DICT = {
         ),
     ],
 )
-
 def test_paths_by_path_ptrns(d: dict, path: list[str], result: list[str]):
     assert sorted(paths_by_path_ptrns(d, path)) == sorted(result)

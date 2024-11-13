@@ -5,6 +5,7 @@ from ruamel.yaml import YAML
 from sic2dc.src.config_compare import ConfigCompareBase, sic2dc
 from sic2dc.src.tools import load_yaml
 
+
 def from_yaml(s: str) -> dict:
     yaml = YAML(typ="safe")
     return yaml.load(s)
@@ -34,13 +35,13 @@ def test_cc_diff_vlan():
     settings = load_yaml(str(file_settings.absolute()))
     filters = load_yaml(str(file_filters.absolute()))
 
-
     cc = ConfigCompareBase(str(f1.absolute()), str(f2.absolute()), settings, filters)
 
     assert cc.diff_dict
 
     vlan_add_diff = {
-        'add': {'switchport trunk allowed vlan 11': {}}, 'del': {'switchport trunk allowed vlan 11,13': {}}
+        'add': {'switchport trunk allowed vlan 11': {}},
+        'del': {'switchport trunk allowed vlan 11,13': {}},
     }
 
     assert cc.diff_dict[('interface Port-Channel1',)] == vlan_add_diff
@@ -49,7 +50,7 @@ def test_cc_diff_vlan():
 def test_cc_base_cure():
     f1 = Path(__file__).parent / 'configs/b4com4100_address_families.cfg'
     f2 = Path(__file__).parent / 'configs/b4com4100_address_families_cured.cfg'
-    
+
     file_settings = Path(__file__).parent.parent / 'example/settings_b4com4100.yml'
     file_cures = Path(__file__).parent.parent / 'example/cures_b4com4100.yml'
 
@@ -71,7 +72,7 @@ def test_sic2dc():
     filters = load_yaml(str(file_filters.absolute()))
 
     result = sic2dc(str(f1.absolute()), str(f2.absolute()), settings, filters)
-    
+
     assert not result['diff_dict'] and not result['diff_lines']
 
 
@@ -86,15 +87,16 @@ def test_sic2dc_diff_vlan():
     filters = load_yaml(str(file_filters.absolute()))
 
     result = sic2dc(str(f1.absolute()), str(f2.absolute()), settings, filters)
-    
+
     vlan_add_diff = {
-        'add': {'switchport trunk allowed vlan 11': {}}, 'del': {'switchport trunk allowed vlan 11,13': {}}
+        'add': {'switchport trunk allowed vlan 11': {}},
+        'del': {'switchport trunk allowed vlan 11,13': {}},
     }
     vlan_add_diff_lines = [
-         'interface Port-Channel1',
-         '  + switchport trunk allowed vlan 11',
-         '  - switchport trunk allowed vlan 11,13'
-        ]
-    
+        'interface Port-Channel1',
+        '  + switchport trunk allowed vlan 11',
+        '  - switchport trunk allowed vlan 11,13',
+    ]
+
     assert result['diff_dict'][('interface Port-Channel1',)] == vlan_add_diff
     assert result['diff_lines'] == vlan_add_diff_lines
