@@ -98,6 +98,27 @@ When applying filters **whens** are used to select more specific sections. Imagi
           - has_children: ['^shutdown$']
           - absent_in_destination: True
 
+## examples
+See app/sic2dc/example/* for filters/cures/settings examples
+
+# Settings
+Settings configure the following parameters (example for b4com switches).
+
+        # enable/disable deleting of command/no command from both configs
+        ignore_cmd_nocmd: True
+
+        # indent char
+        indent_char: ' '
+
+        # number of indent_chars on single indentation level
+        indent: 1
+
+        # list of patterns for comment lines. they will be deleted from both configs.
+        comments:
+          - '^\s*[\!\#].*?$'
+          - '^\s*$'
+          - '^\s*exit\s*$'
+          - '^end\s*$'
 
 # Filters
 Filters mostly copy, delete or change sections in c1 and c2. A filter is defined by the following fileds:
