@@ -37,4 +37,3 @@ class CfgCmprSettings(BaseModel):
     indent: int
     comments: list[StrictStr]
     ignore_cmd_nocmd: bool = False
-    enter_exits: list[dict] = []

@@ -17,6 +17,7 @@ def main():
         type=str,
         help=f"relative path to the first config.",
         required=True,
+        metavar='\b',
     )
     parser.add_argument(
         '-c2',
@@ -24,6 +25,7 @@ def main():
         type=str,
         help=f"relative path to the second config.",
         required=True,
+        metavar='\b',
     )
     parser.add_argument(
         '-s',
@@ -31,6 +33,7 @@ def main():
         type=str,
         help=f"relative path to settings yaml.",
         required=True,
+        metavar='\b',
     )
     parser.add_argument(
         '-f',
@@ -38,6 +41,7 @@ def main():
         type=str,
         help=f"relative path to filters list yaml.",
         default='',
+        metavar='\b',
     )
     parser.add_argument(
         '-c',
@@ -45,6 +49,7 @@ def main():
         type=str,
         help=f"relative path to cures list yaml.",
         default='',
+        metavar='\b',
     )
     parser.add_argument(
         '-g',
@@ -52,6 +57,7 @@ def main():
         type=bool,
         help=f"disable color.",
         default=False,
+        metavar='\b',
     )
 
 

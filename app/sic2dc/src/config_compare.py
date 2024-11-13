@@ -160,7 +160,13 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
         self.diff_dict = dict(diff_dict)
 
 
-def sic2dc(f1: str, f2: str, settings: dict, filters: list[dict], cures: list[dict], color: bool) -> dict:
+def sic2dc(
+        f1: str,
+        f2: str,
+        settings: dict,
+        filters: list[dict] | None = None,
+        cures: list[dict] | None = None,
+        color: bool = False) -> dict:
     """
     Creates ConfigCompareBase object and compares f1 and f2.
     Returns ConfigCompareBase.diff_dict and ConfigCompareBase.dump() lines as dict
