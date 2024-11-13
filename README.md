@@ -19,6 +19,10 @@ When comparing desired to operstate configurations one can face some difficultie
  - configuration syntax may need some treatment before comparison.
 
 
+# Install
+
+    pip install sic2dc
+
 # Usage
 ## cli
         # help
@@ -36,9 +40,29 @@ When comparing desired to operstate configurations one can face some difficultie
           -c, --cures      relative path to cures list yaml.
           -g, --no-color   disable color.
 
-        # cli examples
+## cli example
         > sic2dc -c1 intended/sw1.cfg -c2 oper/sw1.cfg -s sic2dc/settings_arista_dcs.yml -f sic2dc/filters_arista_dcs.yml
-        > sic2dc -c1 intended/sw2.cfg -c2 oper/sw2.cfg -s sic2dc/settings_b4com.yml -f sic2dc/filters_arista_b4com.yml -c sic2dc/cures_b4com.yml
+
+```diff        
+interface Port-Channel1
+-   no shutdown
+interface Ethernet1
++   no switchport
++ snmp-server engineID local 123
++ system l1
++   unsupported speed action error
++   unsupported error-correction action error
++ interface Ethernet3
++   shutdown
++   no switchport
+- errdisable recovery interval 300
+- router bfd
+-   multihop interval 300 min-rx 300 multiplier 3
+interface Port-Channel2
+-   no shutdown
+router bgp 66666
+-   bgp default ipv4-unicast
+```
 
 The following options are required: c1, c2, settings. If no filters or cures are passed the configs are transformed and compared as they are. Filters and cures are yaml files with lists at the top level. Settings is a yaml with a dict.
 

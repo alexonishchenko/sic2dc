@@ -94,9 +94,9 @@ def test_sic2dc_diff_vlan():
     }
     vlan_add_diff_lines = [
         'interface Port-Channel1',
-        '  + switchport trunk allowed vlan 11',
-        '  - switchport trunk allowed vlan 11,13',
-    ]
+        '+   switchport trunk allowed vlan 11',
+        '-   switchport trunk allowed vlan 11,13',
+    ] 
 
     assert result['diff_dict'][('interface Port-Channel1',)] == vlan_add_diff
     assert result['diff_lines'] == vlan_add_diff_lines

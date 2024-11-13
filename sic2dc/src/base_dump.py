@@ -62,7 +62,7 @@ def dump_action(action_dict: dict, path: list[str], symbol: str, color: bool = F
 
     for i, line in enumerate([snn for snn in s_no_nones if snn]):
         if i >= len(path):
-            result.append(re.sub(r'(^\s*)', r"\1" + f"{symbol} ", line))
+            result.append(re.sub(r'(^\s*)', f"{symbol} " + r"\1", line))
         else:
             result.append(line)
 
