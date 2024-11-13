@@ -113,17 +113,20 @@ class FilterModule(object):
 # Concepts
 ## dicts
 When a config is transformed into dict the lines of the config are trimmed and become dict keys.
+```python
 router bgp 1234    # spaces in the end of line
   router-id 1234
-transforms into
+# transforms into
 {'router bgp 1234': {'router-id 1234': {}}}
+```
 
 ## path
 Since we compare nested dicts **path** is used to define config parts of interest. Path is a list of regex patterns.
-<br>Examples<br>
-path=['interface [Ee]thernet \S+'] means all ethernet interfaces
-path=['router bgp \d+', 'address-family .*'] means all address-families in 'router bgp' section. 
-
+<br>path examples
+```python
+path = ['interface [Ee]thernet \S+'] # all ethernet interfaces
+path = ['router bgp \d+', 'address-family .*'] # all address-families in 'router bgp' section. 
+```
 ## whens
 When applying filters **whens** are used to select more specific sections. Imagine we want to select all unused interfaces that exist in operstate and do not exist in desired state. So they should be 'shutdown' and they should be absent in destination.
 
