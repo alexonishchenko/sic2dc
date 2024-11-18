@@ -38,3 +38,4 @@ class CfgCmprSettings(BaseModel):
     indent: int
     comments: list[StrictStr]
     ignore_cmd_nocmd: bool = False
+    no_cmd: str | None = None

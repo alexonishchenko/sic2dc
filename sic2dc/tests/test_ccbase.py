@@ -6,11 +6,6 @@ from sic2dc.src.config_compare import ConfigCompareBase, sic2dc
 from sic2dc.src.tools import load_yaml
 
 
-def from_yaml(s: str) -> dict:
-    yaml = YAML(typ="safe")
-    return yaml.load(s)
-
-
 def test_cc_base():
     f1 = Path(__file__).parent / 'configs/arista_desired.cfg'
     f2 = Path(__file__).parent / 'configs/arista_oper.cfg'

@@ -1,3 +1,6 @@
+ignore_cmd_nocmd: True
+no_cmd: 'no '
+
 indent_char: ' '
 indent: 3
 comments:

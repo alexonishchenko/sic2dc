@@ -9,7 +9,7 @@ def load_yaml(filename: str) -> list | dict:
         return yaml.load(f)
 
 
-def paths_to_dict(paths: list[tuple]) -> dict:
+def paths_to_dict(paths: list[tuple], no_cmd: str = '') -> dict:
     """
     Turn list of paths into dict.
     Example:
@@ -28,6 +28,16 @@ def paths_to_dict(paths: list[tuple]) -> dict:
     for path in paths:
         current = result
         for p in path:
+            if no_cmd:
+                if M := re.match(f'^{no_cmd}(.*$)', p):
+                    p_wo_no = str(M.groups()[0])
+                    if p_wo_no in current:
+                        current.pop(p_wo_no)
+                        continue
+                else:
+                    no_p = f"{no_cmd}{p}"
+                    if no_p in current:
+                        current.pop(no_p)
             if p in current:
                 current = current[p]
             else:
@@ -35,7 +45,7 @@ def paths_to_dict(paths: list[tuple]) -> dict:
     return result
 
 
-def indented_to_dict(config: str, indent_char: str = " ", indent: int = 3, comments: list[str] = None):
+def indented_to_dict(config: str, indent_char: str = " ", indent: int = 3, comments: list[str] = None, no_cmd: str = ''):
     """
     Create nested dict from indentet config.
     Example:
@@ -67,7 +77,7 @@ def indented_to_dict(config: str, indent_char: str = " ", indent: int = 3, comme
         paths.append([p for p in paths[-1][:level]] + [name])
     paths = paths[1:]
 
-    return paths_to_dict(paths)
+    return paths_to_dict(paths, no_cmd)
 
 
 def remove_key_nokey(d: dict, no: str = "no "):
@@ -95,9 +105,12 @@ def remove_key_nokey(d: dict, no: str = "no "):
     keys = list(d)
     for k in keys:
         nokey = f"{no}{k}"
-        if k in d and nokey in d:
-            d.pop(k)
-            d.pop(nokey)
+        if k in keys and nokey in keys:
+            if keys.index(nokey) > keys.index(k):
+                d.pop(k)
+                d.pop(nokey)
+            elif keys.index(k) > keys.index(nokey):
+                d.pop(nokey)
     for k in list(d):
         remove_key_nokey(d[k])
 
