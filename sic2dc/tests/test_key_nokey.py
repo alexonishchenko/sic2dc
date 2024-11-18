@@ -21,7 +21,6 @@ def test_key_nokey():
     f_result = Path(__file__).parent / 'configs/arista1_short_nokey.yml'
     assert cc.d1 == load_yaml(str(f_result.absolute()))
 
-
     # check nokey not deleted because key added after
     f1 = Path(__file__).parent / 'configs/arista1_short_nokey_after.cfg'
     cc = ConfigCompareBase(str(f1.absolute()), str(f2.absolute()), settings, filters)

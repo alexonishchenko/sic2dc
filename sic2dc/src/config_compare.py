@@ -90,8 +90,12 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
 
         # set dicts from files
         no_cmd = self.settings.no_cmd if self.settings.no_cmd and self.settings.ignore_cmd_nocmd else ''
-        self.d1 = indented_to_dict(self.c1, **self.settings.model_dump(include=['indent', 'indent_char', 'comments']), no_cmd=no_cmd)
-        self.d2 = indented_to_dict(self.c2, **self.settings.model_dump(include=['indent', 'indent_char', 'comments']), no_cmd=no_cmd)
+        self.d1 = indented_to_dict(
+            self.c1, **self.settings.model_dump(include=['indent', 'indent_char', 'comments']), no_cmd=no_cmd
+        )
+        self.d2 = indented_to_dict(
+            self.c2, **self.settings.model_dump(include=['indent', 'indent_char', 'comments']), no_cmd=no_cmd
+        )
 
         self.d1_unfiltered = deepcopy(self.d1)
         self.d2_unfiltered = deepcopy(self.d2)
@@ -136,14 +140,28 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
             tuple(ast.literal_eval(p.replace("root", "").replace('"', '').replace('][', ', ')))
             for p in dif.get('dictionary_item_added', [])
         ] + [
-            tuple(ast.literal_eval(p.replace("root", "").replace('"', '').replace('][', ', ').replace(']', f",'{list(v['new_value'])[0]}']")))
+            tuple(
+                ast.literal_eval(
+                    p.replace("root", "")
+                    .replace('"', '')
+                    .replace('][', ', ')
+                    .replace(']', f",'{list(v['new_value'])[0]}']")
+                )
+            )
             for p, v in dif.get('values_changed', dict()).items()
         ]
         dif_del = [
             tuple(ast.literal_eval(p.replace("root", "").replace('"', '').replace('][', ', ')))
             for p in dif.get('dictionary_item_removed', [])
         ] + [
-            tuple(ast.literal_eval(p.replace("root", "").replace('"', '').replace('][', ', ').replace(']', f",'{list(v['old_value'])[0]}']")))
+            tuple(
+                ast.literal_eval(
+                    p.replace("root", "")
+                    .replace('"', '')
+                    .replace('][', ', ')
+                    .replace(']', f",'{list(v['old_value'])[0]}']")
+                )
+            )
             for p, v in dif.get('values_changed', {}).items()
         ]
 

@@ -45,7 +45,9 @@ def paths_to_dict(paths: list[tuple], no_cmd: str = '') -> dict:
     return result
 
 
-def indented_to_dict(config: str, indent_char: str = " ", indent: int = 3, comments: list[str] = None, no_cmd: str = ''):
+def indented_to_dict(
+    config: str, indent_char: str = " ", indent: int = 3, comments: list[str] = None, no_cmd: str = ''
+):
     """
     Create nested dict from indentet config.
     Example:
