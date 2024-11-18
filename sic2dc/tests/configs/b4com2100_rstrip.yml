@@ -1,0 +1,15 @@
+service password-encryption: {}
+service terminal-length 0: {}
+hostname b4com2100: {}
+aaa new-model: {}
+aaa privilege mapping 12 13 14: {}
+aaa authentication login default tacacs-plus local: {}
+aaa authorization exec default tacacs-plus local: {}
+aaa accounting commands default tacacs-plus: {}
+aaa accounting exec default start-stop tacacs-plus: {}
+interface e1:
+  shutdown: {}
+interface e2:
+  no shutdown: {}
+interface e3:
+  no shutdown: {}

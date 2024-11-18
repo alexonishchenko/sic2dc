@@ -95,3 +95,19 @@ def test_sic2dc_diff_vlan():
 
     assert result['diff_dict'][('interface Port-Channel1',)] == vlan_add_diff
     assert result['diff_lines'] == vlan_add_diff_lines
+
+
+def test_rstrip():
+    f1 = Path(__file__).parent / 'configs/b4com2100_rstrip.cfg'
+    f2 = Path(__file__).parent / 'configs/b4com2100_norstrip.cfg'
+
+    file_settings = Path(__file__).parent.parent / 'example/settings_b4com4100.yml'
+
+    settings = load_yaml(str(file_settings.absolute()))
+
+    cc = ConfigCompareBase(str(f1.absolute()), str(f2.absolute()), settings, [], [])
+
+    path_result = Path(__file__).parent / 'configs/b4com2100_rstrip.yml'
+    assert cc.d1 == load_yaml(str(path_result.absolute()))
+
+    assert not cc.diff_dict

@@ -1,4 +1,5 @@
 ignore_cmd_nocmd: True
+no_cmd: 'no '
 indent_char: ' '
 indent: 1
 comments:
@@ -6,3 +7,5 @@ comments:
   - '^\s*$'
   - '^\s*exit\s*$'
   - '^end\s*$'
+  - '^Building configuration'
+  - '^version .*'

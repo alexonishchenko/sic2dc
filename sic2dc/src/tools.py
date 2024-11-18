@@ -73,7 +73,8 @@ def indented_to_dict(
     for i, line in enumerate(config.splitlines()):
         if any(re.match(comment, line) for comment in comments):
             continue
-        name = line.lstrip(indent_char).rstrip()
+        line = line.rstrip()
+        name = line.lstrip(indent_char)
         level = (len(line) - len(name)) // indent
         indented_lines.append((i, level, name))
         paths.append([p for p in paths[-1][:level]] + [name])
