@@ -1,19 +1,17 @@
 from pathlib import Path
 
-import ast
 import json
 import logging
 
 from collections import defaultdict
 from copy import deepcopy
-from deepdiff import DeepDiff
 
 from sic2dc.src.base_cures import CuresMixin
 from sic2dc.src.base_dump import DumpMixin
 from sic2dc.src.base_filters import FiltersMixin
 
 from sic2dc.src.schema import CfgCmprCure, CfgCmprFilter, CfgCmprSettings
-from sic2dc.src.tools import get_subdict_by_path, indented_to_dict, remove_key_nokey
+from sic2dc.src.tools import dict_path, get_subdict_by_path, indented_to_dict
 
 
 logger = logging.getLogger()
@@ -46,9 +44,7 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
     ConfigCompareBase.dump() returns and/or prints out text (color) difference.
     """
 
-    def __init__(
-        self, f1: str, f2: str, settings: CfgCmprSettings, filters: list[dict] = None, cures: list[dict] = None
-    ):
+    def __init__(self, f1: str, f2: str, settings: dict, filters: list[dict] = None, cures: list[dict] = None):
         """
         1. Create cc object: read files, apply cures and create d1 and d2.
         2. Apply filters to dicts
@@ -132,42 +128,17 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
 
     def compare(self):
         """
-        Compare prepared dicts using deepdiff and set diff_dict - subdicts to be added and to be removed from d2
+        Compare prepared dicts by sets of paths and set diff_dict - subdicts to be added and to be removed from d2
         """
-        dif = DeepDiff(self.d1, self.d2)
+        d1_paths = set([tuple(dp) for dp in dict_path(self.d1)])
+        d2_paths = set([tuple(dp) for dp in dict_path(self.d2)])
 
-        dif_add = [
-            tuple(ast.literal_eval(p.replace("root", "").replace('"', '').replace('][', ', ')))
-            for p in dif.get('dictionary_item_added', [])
-        ] + [
-            tuple(
-                ast.literal_eval(
-                    p.replace("root", "")
-                    .replace('"', '')
-                    .replace('][', ', ')
-                    .replace(']', f",'{list(v['new_value'])[0] if v['new_value'] else ''}']")
-                )
-            )
-            for p, v in dif.get('values_changed', dict()).items()
-        ]
-        dif_del = [
-            tuple(ast.literal_eval(p.replace("root", "").replace('"', '').replace('][', ', ')))
-            for p in dif.get('dictionary_item_removed', [])
-        ] + [
-            tuple(
-                ast.literal_eval(
-                    p.replace("root", "")
-                    .replace('"', '')
-                    .replace('][', ', ')
-                    .replace(']', f",'{list(v['old_value'])[0] if v['old_value'] else ''}']")
-                )
-            )
-            for p, v in dif.get('values_changed', {}).items()
-        ]
+        dif_add = d2_paths - d1_paths
+        dif_del = d1_paths - d2_paths
 
         diff_dict = defaultdict(dict)
 
-        for path in set(dif_add + dif_del):
+        for path in d1_paths.symmetric_difference(d2_paths):
             result_path = path[:-1]
             key = tuple(result_path)
             if not key in diff_dict:
@@ -177,8 +148,6 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
                 diff_dict[key]['add'][path[-1]] = get_subdict_by_path(self.d2, path)
             if path in dif_del:
                 diff_dict[key]['del'][path[-1]] = get_subdict_by_path(self.d1, path)
-
-        pass
 
         self.diff_dict = dict(diff_dict)
 

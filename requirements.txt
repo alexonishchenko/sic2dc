@@ -1,4 +1,3 @@
-deepdiff
 pydantic
 pydantic_core
 ruamel.yaml
