@@ -1,70 +1,26 @@
 import logging
-import re
 
-from ruamel.yaml import YAML
-from ruamel.yaml.representer import RoundTripRepresenter
-from ruamel.yaml.compat import StringIO
-
-from sic2dc.src.tools import get_subdict_by_path
-
-
-def pathlist2dict(l: list[str], value: dict | None = None) -> dict:
-    current = value
-    for p in l[::-1]:
-        current = {p: current}
-    return current
-
-
-class NonAliasingRTRepresenter(RoundTripRepresenter):
-    def ignore_aliases(self, data):
-        return True
-
-
-class StrYaml(YAML):
-    def dump(self, data, stream=None, **kw):
-        inefficient = False
-        if stream is None:
-            inefficient = True
-            stream = StringIO()
-        self.Representer = NonAliasingRTRepresenter
-        YAML.dump(self, data, stream, **kw)
-        if inefficient:
-            return stream.getvalue()
+KEY_ADD = 'sic2dc_add'
+KEY_DEL = 'sic2dc_del'
 
 
 logger = logging.getLogger()
 
-
-def dump_action(action_dict: dict, path: list[str], symbol: str, color: bool = False) -> list[str]:
-    """
-    Dump single path action (add/del) to text.
-    """
-    if not action_dict:
-        return []
-
-    if path:
-        path_dict = pathlist2dict(path)
-        subpath_dict = get_subdict_by_path(path_dict, path[:-1])
-        subpath_dict[path[-1]] = action_dict
-    else:
-        path_dict = action_dict
-
-    yaml = StrYaml(typ=['rt'])
-    e = yaml.emitter
-    e.MAX_SIMPLE_KEY_LENGTH = 1024
-    s = yaml.dump(path_dict).split('\n')
-
-    s_formatted = list(map(lambda x: re.sub('^[- ] ', f"  ", x), s))
-    color_end = '\033\u001b[0m' if color else ''
-    s_no_nones = list(map(lambda x: re.sub(r'\:( None| \{\})?$', color_end, x), s_formatted))
-
+def dump_dict(d: dict, indent: int = 0, indent_str: str = ' ', color: bool = False,
+              add_key: str = KEY_ADD, del_key: str = KEY_DEL) -> list:
     result = list()
+    color_end = '\033\u001b[0m' if color else ''
+    color_del = '\u001b[31m' if color else ''
+    result.extend([color_del + indent * indent_str + '- ' + l + color_end for l in d.get(del_key, dict())])
+    color_add = '\u001b[32m' if color else ''
+    result.extend([color_add + indent * indent_str + '+ ' + l + color_end for l in d.get(add_key, dict())])
 
-    for i, line in enumerate([snn for snn in s_no_nones if snn]):
-        if i >= len(path):
-            result.append(re.sub(r'(^\s*)', f"{symbol} " + r"\1", line))
-        else:
-            result.append(line)
+    for k, v in d.items():
+        if k in (add_key, del_key):
+            continue
+        result.append(indent * indent_str + k)
+        result.extend(dump_dict(v, indent + 1, indent_str, color, add_key, del_key))
+    
 
     return result
 
@@ -81,12 +37,21 @@ class DumpMixin:
         char_add += '+'
         char_del = '\u001b[31m' if color else ''
         char_del += '-'
-        for k, v in self.diff_dict.items():
-            lines_add = dump_action(v['add'], k, char_add, color)
-            lines_del = dump_action(v['del'], k, char_del, color)
-            if lines_add:
-                lines_del = lines_del[len(k) :]
-            result.extend(lines_add + lines_del)
+
+        result_dict = dict()
+
+        for path, dif in self.diff_dict.items():
+            current_dict = result_dict
+            for p in path:
+                if p not in current_dict:
+                    current_dict[p] = {}
+                current_dict = current_dict[p]
+            pass
+            current_dict[KEY_ADD] = dif.get('add', {})
+            current_dict[KEY_DEL] = dif.get('del', {})
+        
+        result = dump_dict(result_dict, 0, self.settings.indent_char * self.settings.indent, color, KEY_ADD, KEY_DEL)
+
         if not quiet:
             print('\n'.join(result))
         return result
