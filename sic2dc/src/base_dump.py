@@ -6,8 +6,10 @@ KEY_DEL = 'sic2dc_del'
 
 logger = logging.getLogger()
 
-def dump_dict(d: dict, indent: int = 0, indent_str: str = ' ', color: bool = False,
-              add_key: str = KEY_ADD, del_key: str = KEY_DEL) -> list:
+
+def dump_dict(
+    d: dict, indent: int = 0, indent_str: str = ' ', color: bool = False, add_key: str = KEY_ADD, del_key: str = KEY_DEL
+) -> list:
     result = list()
     color_end = '\033\u001b[0m' if color else ''
     color_del = '\u001b[31m' if color else ''
@@ -20,7 +22,6 @@ def dump_dict(d: dict, indent: int = 0, indent_str: str = ' ', color: bool = Fal
             continue
         result.append(indent * indent_str + k)
         result.extend(dump_dict(v, indent + 1, indent_str, color, add_key, del_key))
-    
 
     return result
 
@@ -49,7 +50,7 @@ class DumpMixin:
             pass
             current_dict[KEY_ADD] = dif.get('add', {})
             current_dict[KEY_DEL] = dif.get('del', {})
-        
+
         result = dump_dict(result_dict, 0, self.settings.indent_char * self.settings.indent, color, KEY_ADD, KEY_DEL)
 
         if not quiet:
