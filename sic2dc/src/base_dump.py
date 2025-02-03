@@ -13,9 +13,9 @@ def dump_dict(
     result = list()
     color_end = '\033\u001b[0m' if color else ''
     color_del = '\u001b[31m' if color else ''
-    result.extend([color_del + indent * indent_str + '- ' + l + color_end for l in d.get(del_key, dict())])
+    result.extend([color_del + indent * indent_str + '- ' + l + color_end for l in sorted(d.get(del_key, dict()))])
     color_add = '\u001b[32m' if color else ''
-    result.extend([color_add + indent * indent_str + '+ ' + l + color_end for l in d.get(add_key, dict())])
+    result.extend([color_add + indent * indent_str + '+ ' + l + color_end for l in sorted(d.get(add_key, dict()))])
 
     for k, v in d.items():
         if k in (add_key, del_key):
