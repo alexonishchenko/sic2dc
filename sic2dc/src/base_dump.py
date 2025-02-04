@@ -41,7 +41,8 @@ class DumpMixin:
 
         result_dict = dict()
 
-        for path, dif in self.diff_dict.items():
+        for path in sorted(list(self.diff_dict)):
+            dif = self.diff_dict[path]
             current_dict = result_dict
             for p in path:
                 if p not in current_dict:
