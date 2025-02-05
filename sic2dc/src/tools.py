@@ -170,6 +170,25 @@ def dict_path(d: dict, path: list = None):
     return result
 
 
+def dict_paths_expanded(d: dict):
+    """
+    Expands dict paths.
+    Example (yaml):
+    k1:
+      k2:
+        k3: {}
+      k5': {}
+    k4: {}
+    ->
+    {(k1), (k1, k2), (k1, k2, k3), (k1, k5), (k4)}
+    """
+    result = set()
+    for dp in dict_path(d):
+        for i in range(len(dp)):
+            result.add(tuple(dp[: i + 1]))
+    return result
+
+
 def paths_by_path_ptrns(d: dict, path: list[str] = None) -> list:
     """
     Transform a dict into paths list (see dict_path) and filter by list of paths patterns.

@@ -2,6 +2,7 @@ import pytest
 
 from sic2dc.src.tools import (
     dict_path,
+    dict_paths_expanded,
     get_subdict_by_path,
     indented_to_dict,
     paths_to_dict,
@@ -154,3 +155,46 @@ EXAMPLE_DICT = {
 )
 def test_paths_by_path_ptrns(d: dict, path: list[str], result: list[str]):
     assert sorted(paths_by_path_ptrns(d, path)) == sorted(result)
+
+
+@pytest.mark.parametrize(
+    "d, s",
+    [
+        (
+            EXAMPLE_DICT,
+            {
+                ('interface e1',),
+                ('interface e1', 'no shutdown'),
+                ('interface e1', 'switchport mode access'),
+                ('interface e1', 'switchport access vlan 1'),
+                ('interface e1', 'switchport'),
+                ('interface e2',),
+                ('interface e2', 'no shutdown'),
+                ('interface e2', 'switchport mode access'),
+                ('interface e2', 'switchport access vlan 2'),
+                ('interface e2', 'switchport'),
+                ('interface e3',),
+                ('interface e3', 'no shutdown'),
+                ('interface e3', 'switchport mode access'),
+                ('interface e3', 'switchport access vlan 3'),
+                ('interface e3', 'switchport'),
+                ('router bgp 6666',),
+                ('router bgp 6666', 'router-id 1'),
+            },
+        ),
+        (
+            {
+                'k1': {
+                    'k2': {
+                        'k3': {},
+                    },
+                    'k5': {},
+                },
+                'k4': {},
+            },
+            {('k1',), ('k1', 'k2'), ('k1', 'k2', 'k3'), ('k1', 'k5'), ('k4',)},
+        ),
+    ],
+)
+def test_dict_paths_expanded(d: dict, s: set) -> None:
+    assert dict_paths_expanded(d) == s

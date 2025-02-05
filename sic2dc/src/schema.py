@@ -1,6 +1,9 @@
 from enum import Enum
 from pydantic import BaseModel, StrictStr
 
+KEY_ADD = 'sic2dc_add '
+KEY_DEL = 'sic2dc_del '
+
 
 class CureActionEnum(str, Enum):
     enter_exit = 'enter_exit'

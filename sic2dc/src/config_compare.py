@@ -10,8 +10,8 @@ from sic2dc.src.base_cures import CuresMixin
 from sic2dc.src.base_dump import DumpMixin
 from sic2dc.src.base_filters import FiltersMixin
 
-from sic2dc.src.schema import CfgCmprCure, CfgCmprFilter, CfgCmprSettings
-from sic2dc.src.tools import dict_path, get_subdict_by_path, indented_to_dict
+from sic2dc.src.schema import CfgCmprCure, CfgCmprFilter, CfgCmprSettings, KEY_ADD, KEY_DEL
+from sic2dc.src.tools import dict_path, dict_paths_expanded, indented_to_dict
 
 
 logger = logging.getLogger()
@@ -133,22 +133,32 @@ class ConfigCompareBase(CuresMixin, FiltersMixin, DumpMixin):
         d1_paths = set([tuple(dp) for dp in dict_path(self.d1)])
         d2_paths = set([tuple(dp) for dp in dict_path(self.d2)])
 
-        dif_add = d2_paths - d1_paths
-        dif_del = d1_paths - d2_paths
+        d1_paths = dict_paths_expanded(self.d1)
+        d2_paths = dict_paths_expanded(self.d2)
 
+        paths = sorted(d1_paths.symmetric_difference(d2_paths))
         diff_dict = defaultdict(dict)
 
-        for path in d1_paths.symmetric_difference(d2_paths):
-            result_path = path[:-1]
-            key = tuple(result_path)
-            if not key in diff_dict:
-                diff_dict[key]['add'] = dict()
-                diff_dict[key]['del'] = dict()
-            if path in dif_add:
-                diff_dict[key]['add'][path[-1]] = get_subdict_by_path(self.d2, path)
-            if path in dif_del:
-                diff_dict[key]['del'][path[-1]] = get_subdict_by_path(self.d1, path)
-
+        for path in paths:
+            cur_dict = diff_dict
+            for i, k in enumerate(path):
+                cur_path = path[: i + 1]
+                if k in cur_dict:
+                    cur_dict = cur_dict[k]
+                elif f"{KEY_ADD}{k}" in cur_dict:
+                    cur_dict = cur_dict[f"{KEY_ADD}{k}"]
+                elif f"{KEY_DEL}{k}" in cur_dict:
+                    cur_dict = cur_dict[f"{KEY_DEL}{k}"]
+                else:
+                    if cur_path in d1_paths and cur_path in d2_paths:
+                        cur_dict[k] = dict()
+                        cur_dict = cur_dict[k]
+                    elif cur_path in d1_paths:
+                        cur_dict[f"{KEY_DEL}{k}"] = dict()
+                        cur_dict = cur_dict[f"{KEY_DEL}{k}"]
+                    elif cur_path in d2_paths:
+                        cur_dict[f"{KEY_ADD}{k}"] = dict()
+                        cur_dict = cur_dict[f"{KEY_ADD}{k}"]
         self.diff_dict = dict(diff_dict)
 
 

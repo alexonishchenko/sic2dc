@@ -3,6 +3,7 @@ from pathlib import Path
 from ruamel.yaml import YAML
 
 from sic2dc.src.config_compare import ConfigCompareBase, sic2dc
+from sic2dc.src.schema import KEY_ADD, KEY_DEL
 from sic2dc.src.tools import load_yaml
 
 
@@ -35,11 +36,11 @@ def test_cc_diff_vlan():
     assert cc.diff_dict
 
     vlan_add_diff = {
-        'add': {'switchport trunk allowed vlan 11': {}},
-        'del': {'switchport trunk allowed vlan 11,13': {}},
+        f'{KEY_ADD}switchport trunk allowed vlan 11': {},
+        f'{KEY_DEL}switchport trunk allowed vlan 11,13': {},
     }
 
-    assert cc.diff_dict[('interface Port-Channel1',)] == vlan_add_diff
+    assert cc.diff_dict['interface Port-Channel1'] == vlan_add_diff
 
 
 def test_cc_base_cure():
@@ -84,16 +85,16 @@ def test_sic2dc_diff_vlan():
     result = sic2dc(str(f1.absolute()), str(f2.absolute()), settings, filters)
 
     vlan_add_diff = {
-        'add': {'switchport trunk allowed vlan 11': {}},
-        'del': {'switchport trunk allowed vlan 11,13': {}},
+        f'{KEY_ADD}switchport trunk allowed vlan 11': {},
+        f'{KEY_DEL}switchport trunk allowed vlan 11,13': {},
     }
     vlan_add_diff_lines = [
         'interface Port-Channel1',
-        '+   switchport trunk allowed vlan 11',
-        '-   switchport trunk allowed vlan 11,13',
+        '   + switchport trunk allowed vlan 11',
+        '   - switchport trunk allowed vlan 11,13',
     ]
 
-    assert result['diff_dict'][('interface Port-Channel1',)] == vlan_add_diff
+    assert result['diff_dict']['interface Port-Channel1'] == vlan_add_diff
     assert result['diff_lines'] == vlan_add_diff_lines
 
 
@@ -111,3 +112,7 @@ def test_rstrip():
     assert cc.d1 == load_yaml(str(path_result.absolute()))
 
     assert not cc.diff_dict
+
+
+if __name__ == "__main__":
+    test_cc_diff_vlan()
